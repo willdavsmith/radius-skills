@@ -1,0 +1,29 @@
+{
+  "name": "radius-skills",
+  "displayName": "Radius Skills",
+  "version": "1.0.0",
+  "description": "Infrastructure and platform engineering skills for defining platform standards, auditing applications, and designing cloud architecture.",
+  "author": {
+    "name": "Radius Skills Contributors"
+  },
+  "publisher": "radius-skills",
+  "homepage": "https://github.com/radius-skills",
+  "repository": "https://github.com/radius-skills",
+  "license": "MIT",
+  "keywords": [
+    "platform-engineering",
+    "infrastructure",
+    "cloud-architecture",
+    "terraform",
+    "kubernetes",
+    "azure",
+    "aws"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "infrastructure",
+    "platform-engineering",
+    "cloud"
+  ],
+  "skills": "./skills/"
+}
