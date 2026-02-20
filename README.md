@@ -50,9 +50,9 @@ Author Radius application definitions using Bicep. Guides developers through def
 
 Configure Radius environments with recipes and resource types. Helps platform engineers register recipes, select recipe packs, and align environment configuration with the platform constitution.
 
-#### radius-resource-type
+#### radius-new-type
 
-Author custom Radius resource types and recipes following [resource-types-contrib](https://github.com/radius-project/resource-types-contrib) conventions. Scaffolds resource type YAML schemas and recipe templates.
+Create and install new Radius resource types and recipes when a needed type doesn't exist in [resource-types-contrib](https://github.com/radius-project/resource-types-contrib). Walks through defining the YAML schema, writing recipes, registering the type, and contributing back.
 
 ## MCP Server
 
@@ -97,7 +97,7 @@ radius-skills/
     ├── radius-environment/
     │   ├── SKILL.md
     │   └── references/
-    ├── radius-resource-type/
+    ├── radius-new-type/
     │   ├── SKILL.md
     │   └── references/
     ├── app-audit/

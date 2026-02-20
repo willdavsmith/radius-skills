@@ -1,23 +1,27 @@
 ---
-name: radius-resource-type
-description: Author custom Radius resource types and recipes following resource-types-contrib conventions. Use when creating new resource types, writing recipes, or contributing to the Radius ecosystem.
+name: radius-new-type
+description: Create and install a new Radius resource type and recipes when a needed resource type does not exist in resource-types-contrib. Use when a developer needs a resource type that is not yet available, or when a platform engineer wants to extend the Radius catalog.
 license: MIT
 metadata:
   author: radius-skills
   version: "1.0.0"
 ---
 
-# Radius Resource Type Authoring
+# Create a New Radius Resource Type
 
-Use this skill to help platform engineers create custom resource types and recipes that follow the [resource-types-contrib](https://github.com/radius-project/resource-types-contrib) conventions.
+Use this skill when a developer or platform engineer needs a resource type that does not yet exist in [resource-types-contrib](https://github.com/radius-project/resource-types-contrib). This skill walks through creating the resource type definition, writing recipes, registering the type, and optionally contributing it back.
 
 ## Workflow
 
-1. **Identify the resource abstraction.** What infrastructure does the developer need? Define it as a portable, cloud-agnostic interface.
-2. **Choose the namespace.** Use existing namespaces (`Radius.Data`, `Radius.Compute`, `Radius.Security`) or create a custom one (e.g., `Contoso.Messaging`).
-3. **Define the resource type YAML schema** following the conventions below.
-4. **Write recipes** for each target platform (Azure, AWS, Kubernetes) using the organization's approved IaC tooling.
-5. **Test** the resource type and recipes locally before contributing.
+1. **Confirm the type is missing.** Check registered resource types via `rad resource-type list` and the [resource-types-contrib](https://github.com/radius-project/resource-types-contrib) repo. If the type already exists, stop and use it directly.
+2. **Identify the resource abstraction.** What infrastructure does the developer need? Define it as a portable, cloud-agnostic interface.
+3. **Choose the namespace.** Use existing namespaces (`Radius.Data`, `Radius.Compute`, `Radius.Security`) or create a custom one (e.g., `Contoso.Messaging`).
+4. **Define the resource type YAML schema** following the conventions below.
+5. **Write recipes** for each target platform (Azure, AWS, Kubernetes) using the organization's approved IaC tooling from the platform constitution.
+6. **Register the resource type** in the Radius environment using `rad resource-type create`.
+7. **Register the recipe(s)** using `rad recipe register`.
+8. **Test** with `rad run` to verify the resource type and recipes work end-to-end.
+9. **Optionally contribute** the new type back to [resource-types-contrib](https://github.com/radius-project/resource-types-contrib).
 
 ## Resource Type Definition
 

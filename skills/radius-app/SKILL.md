@@ -1,6 +1,6 @@
 ---
 name: radius-app
-description: Author Radius application definitions using Bicep. Use when creating or modifying Radius applications, containers, connections, or resource references. Loads resource type schemas and generates correct Bicep patterns.
+description: Author Radius application definitions using Bicep. Use when creating or modifying Radius applications, containers, connections, or resource references. Loads resource type schemas from resource-types-contrib and generates correct Bicep patterns.
 license: MIT
 metadata:
   author: radius-skills
@@ -9,15 +9,16 @@ metadata:
 
 # Radius Application Authoring
 
-Use this skill to help developers define Radius applications using Bicep, with correct resource types, connections, and patterns aligned to the platform engineering constitution.
+Use this skill to help developers define Radius applications using Bicep, with correct resource types from [resource-types-contrib](https://github.com/radius-project/resource-types-contrib) and patterns aligned to the platform engineering constitution.
 
 ## Workflow
 
 1. **Read the platform constitution.** Check for `Platform-Engineering-Constitution.md` in the repository root. Note approved cloud providers, compute platforms, and IaC tooling — these determine which resource types and recipes are available.
 2. **Identify what the developer needs.** Ask what resources the application requires (databases, caches, message queues, secrets, etc.).
-3. **Load the relevant resource type schemas** from the references below to understand available properties, required fields, and connection environment variables.
-4. **Generate the Bicep application definition** with correct resource declarations and connections.
-5. **Validate** the generated Bicep against the constitution constraints and resource type schemas.
+3. **Check if the needed resource types exist** in the registered resource types (use `rad resource-type list` or check [resource-types-contrib](https://github.com/radius-project/resource-types-contrib)). If a needed resource type does not exist, **invoke the `radius-new-type` skill** to walk through creating and installing it before proceeding.
+4. **Load the relevant resource type schemas** from the references below to understand available properties, required fields, and connection environment variables.
+5. **Generate the Bicep application definition** with correct resource declarations and connections.
+6. **Validate** the generated Bicep against the constitution constraints and resource type schemas.
 
 ## Application Structure
 
@@ -29,11 +30,8 @@ extension radius
 @description('The Radius Environment ID. Injected automatically by the rad CLI.')
 param environment string
 
-@description('The Radius Application ID. Injected automatically by the rad CLI.')
-param application string
-
-// Application resource (optional, can be implicit)
-resource app 'Applications.Core/applications@2023-10-01-preview' = {
+// Application resource
+resource app 'Radius.Core/applications@2025-08-01-preview' = {
   name: 'myapp'
   properties: {
     environment: environment
@@ -41,15 +39,18 @@ resource app 'Applications.Core/applications@2023-10-01-preview' = {
 }
 
 // Container resource
-resource frontend 'Applications.Core/containers@2023-10-01-preview' = {
+resource frontend 'Radius.Compute/containers@2025-08-01-preview' = {
   name: 'frontend'
   properties: {
+    environment: environment
     application: app.id
-    container: {
-      image: 'myregistry/frontend:latest'
-      ports: {
-        web: {
-          containerPort: 3000
+    containers: {
+      frontend: {
+        image: 'myregistry/frontend:latest'
+        ports: {
+          web: {
+            containerPort: 3000
+          }
         }
       }
     }
@@ -73,6 +74,21 @@ resource db 'Radius.Data/postgreSqlDatabases@2025-08-01-preview' = {
 
 ## Key Concepts
 
+### Resource Types
+
+All resource types come from [resource-types-contrib](https://github.com/radius-project/resource-types-contrib). **Do not use `Applications.Core/*` or `Applications.*` resource types.** Use the `Radius.*` namespaced types instead.
+
+**Available namespaces and resource types:**
+
+| Namespace | Resource Types | Description |
+|-----------|---------------|-------------|
+| `Radius.Core` | `applications` | Application grouping resource |
+| `Radius.Compute` | `containers`, `persistentVolumes`, `routes` | Compute, storage, and networking |
+| `Radius.Data` | `postgreSqlDatabases`, `mySqlDatabases` | Database resources |
+| `Radius.Security` | `secrets` | Secret management |
+
+If the resource type you need is not listed above, **use the `radius-new-type` skill** to create a new resource type definition and recipes, then register it before using it in your application.
+
 ### Connections
 Connections between a container and a resource automatically inject environment variables into the container. The naming convention is:
 
@@ -86,18 +102,6 @@ For example, a connection named `database` to a PostgreSQL resource injects:
 - `CONNECTION_DATABASE_DATABASE`
 - `CONNECTION_DATABASE_USERNAME`
 - `CONNECTION_DATABASE_PASSWORD`
-
-### Resource Types
-Resource types define the schema for portable resources. They are namespaced (e.g., `Radius.Data/postgreSqlDatabases`) and versioned with API versions (e.g., `2025-08-01-preview`). Available resource types can be browsed at [resource-types-contrib](https://github.com/radius-project/resource-types-contrib).
-
-**Available namespaces:**
-
-| Namespace | Resource Types | Description |
-|-----------|---------------|-------------|
-| `Applications.Core` | `containers`, `applications`, `environments`, `gateways`, `volumes` | Core Radius resources |
-| `Radius.Compute` | `containers`, `persistentVolumes`, `routes` | Compute resources |
-| `Radius.Data` | `postgreSqlDatabases`, `mySqlDatabases` | Database resources |
-| `Radius.Security` | `secrets` | Security resources |
 
 ### Recipes
 Recipes are the platform engineer's implementation of how a resource type gets deployed. Developers don't need to know the recipe details — they just reference the resource type and Radius resolves the recipe based on the environment configuration.
@@ -113,8 +117,9 @@ Recipes are the platform engineer's implementation of how a resource type gets d
 
 ## Guardrails
 
+- **Never use `Applications.Core/*` or `Applications.*` resource types.** All resource types must come from [resource-types-contrib](https://github.com/radius-project/resource-types-contrib) using `Radius.*` namespaces.
+- **If a resource type is missing**, do not improvise. Invoke the `radius-new-type` skill to create and install it first.
 - **Always check the platform constitution** before suggesting resource types or cloud-specific patterns.
-- **Use portable resource types** (e.g., `Radius.Data/postgreSqlDatabases`) instead of cloud-specific resources unless the developer explicitly needs a specific cloud service.
 - **Never hardcode infrastructure details** in application definitions. Let recipes handle the implementation.
 - **Always include the `environment` parameter** — it is required for all Radius resources.
 - **Validate connection names** match what the application code expects for environment variables.
