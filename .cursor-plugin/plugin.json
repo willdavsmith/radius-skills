@@ -2,7 +2,7 @@
   "name": "radius-skills",
   "displayName": "Radius Skills",
   "version": "1.0.0",
-  "description": "Infrastructure and platform engineering skills for defining platform standards, auditing applications, and designing cloud architecture.",
+  "description": "Infrastructure and platform engineering skills with Radius integration for defining platform standards, authoring apps, managing environments, and designing cloud architecture.",
   "author": {
     "name": "Radius Skills Contributors"
   },
@@ -14,15 +14,19 @@
     "platform-engineering",
     "infrastructure",
     "cloud-architecture",
+    "radius",
     "terraform",
+    "bicep",
     "kubernetes",
     "azure",
-    "aws"
+    "aws",
+    "recipes"
   ],
   "category": "developer-tools",
   "tags": [
     "infrastructure",
     "platform-engineering",
+    "radius",
     "cloud"
   ],
   "skills": "./skills/"

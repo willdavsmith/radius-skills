@@ -1,0 +1,17 @@
+{
+  "name": "@radius-skills/mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for Radius CLI — provides tools for introspecting Radius environments, recipes, resource types, and applications.",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "radius-mcp-server": "src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1"
+  },
+  "license": "MIT"
+}
